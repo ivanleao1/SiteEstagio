@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Aluno | IFG Campus Goiânia</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ifg: {
+                            green: '#006633',
+                            'green-dark': '#004d26',
+                            'green-light': '#e6f0eb',
+                            red: '#cc0000',
+                            'red-dark': '#990000',
+                            gray: '#f4f6f8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Acessibilidade - Alto Contraste */
+        html.high-contrast {
+            filter: contrast(140%);
+        }
+        html.high-contrast body {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        html.high-contrast .bg-white, 
+        html.high-contrast .bg-ifg-gray,
+        html.high-contrast .bg-ifg-green-light {
+            background-color: #121212 !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+        }
+        html.high-contrast .text-gray-600,
+        html.high-contrast .text-gray-500,
+        html.high-contrast .text-gray-700 {
+            color: #e0e0e0 !important;
+        }
+
+        /* Transições suaves */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        /* Focus ring visível para acessibilidade */
+        a:focus-visible, button:focus-visible, input:focus-visible {
+            outline: 3px solid #cc0000 !important;
+            outline-offset: 2px !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Barra de Acessibilidade Topo -->
+    <section aria-label="Barra de Acessibilidade" class="bg-gray-900 text-white text-xs py-2 px-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-2">
+            <span class="font-medium tracking-wide">Instituto Federal de Goiás - Campus Goiânia</span>
+            <div class="flex items-center space-x-3">
+                <span class="hidden sm:inline">Acessibilidade:</span>
+                <button id="btn-increase-font" class="hover:bg-gray-700 px-2 py-1 rounded transition" aria-label="Aumentar fonte">A+</button>
+                <button id="btn-decrease-font" class="hover:bg-gray-700 px-2 py-1 rounded transition" aria-label="Diminuir fonte">A-</button>
+                <button id="btn-reset-font" class="hover:bg-gray-700 px-2 py-1 rounded transition" aria-label="Restaurar tamanho da fonte">A</button>
+                <button id="btn-contrast" class="hover:bg-gray-700 px-2 py-1 rounded flex items-center gap-1 transition" aria-label="Alternar Alto Contraste">
+                    <i data-lucide="sun-moon" class="w-3.5 h-3.5"></i> Contraste
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Header Principal -->
+    <header class="bg-ifg-green text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <!-- Logo IFG -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center font-bold text-ifg-green text-xl shadow">
+                    <span class="text-ifg-red">I</span>FG
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">Portal do Aluno</h1>
+                    <p class="text-xs text-green-200">Campus Goiânia • Ensino Médio & Técnico</p>
+                </div>
+            </div>
+
+            <!-- Botão Menu Mobile -->
+            <button id="btn-mobile-menu" class="md:hidden p-2 rounded-lg hover:bg-ifg-green-dark text-white focus:outline-none" aria-label="Abrir Menu">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Nav Desktop -->
+            <nav class="hidden md:flex space-x-1">
+                <button data-target="home" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm hover:bg-ifg-green-dark transition active-tab">Início</button>
+                <button data-target="guias" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm hover:bg-ifg-green-dark transition">Guias Passo a Passo</button>
+                <button data-target="suap" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm hover:bg-ifg-green-dark transition">Atalhos SUAP</button>
+                <button data-target="normas" class="nav-btn px-4 py-2 rounded-lg font-medium text-sm hover:bg-ifg-green-dark transition">Regimentos & Normas</button>
+            </nav>
+        </div>
+
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-ifg-green-dark border-t border-green-800 px-4 pt-2 pb-4 space-y-2">
+            <button data-target="home" class="nav-btn-mobile w-full text-left px-3 py-2 rounded font-medium text-white hover:bg-ifg-green">Início</button>
+            <button data-target="guias" class="nav-btn-mobile w-full text-left px-3 py-2 rounded font-medium text-white hover:bg-ifg-green">Guias Passo a Passo</button>
+            <button data-target="suap" class="nav-btn-mobile w-full text-left px-3 py-2 rounded font-medium text-white hover:bg-ifg-green">Atalhos SUAP</button>
+            <button data-target="normas" class="nav-btn-mobile w-full text-left px-3 py-2 rounded font-medium text-white hover:bg-ifg-green">Regimentos & Normas</button>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal SPA -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Barra de Busca Rápida / Inteligente -->
+        <section class="mb-8">
+            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+                <label for="search-input" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i data-lucide="sparkles" class="inline w-4 h-4 text-ifg-red mr-1"></i> Busca Rápida para o Estudante
+                </label>
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Digite o que procura... Ex: 'Certificado', 'Faltas', 'Estágio', 'Biblioteca'" class="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-ifg-green focus:border-transparent text-sm sm:text-base transition">
+                    <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
+                    <button id="btn-clear-search" class="hidden absolute right-3 top-3.5 text-gray-400 hover:text-gray-600">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Tags Rápidas -->
+                <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                    <span class="text-gray-500 self-center">Mais buscados:</span>
+                    <button class="tag-btn bg-gray-100 hover:bg-ifg-green-light hover:text-ifg-green px-2.5 py-1 rounded-full text-gray-600 transition">Certificado EJA</button>
+                    <button class="tag-btn bg-gray-100 hover:bg-ifg-green-light hover:text-ifg-green px-2.5 py-1 rounded-full text-gray-600 transition">Boletim SUAP</button>
+                    <button class="tag-btn bg-gray-100 hover:bg-ifg-green-light hover:text-ifg-green px-2.5 py-1 rounded-full text-gray-600 transition">Estágio</button>
+                    <button class="tag-btn bg-gray-100 hover:bg-ifg-green-light hover:text-ifg-green px-2.5 py-1 rounded-full text-gray-600 transition">Calendário Acadêmico</button>
+                </div>
+
+                <!-- Resultado da Busca Container -->
+                <div id="search-results" class="hidden mt-4 pt-4 border-t border-gray-100 space-y-2 max-h-80 overflow-y-auto"></div>
+            </div>
+        </section>
+
+        <!-- ABA 1: INÍCIO / VISÃO GERAL -->
+        <section id="tab-home" class="tab-content active space-y-6">
+            <!-- Banner Destaque Mobile First -->
+            <div class="bg-gradient-to-r from-ifg-green to-ifg-green-dark rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-ifg-red text-white text-xs font-bold uppercase px-3 py-1 rounded-full tracking-wider mb-3 inline-block">Boas-vindas ao Campus Goiânia</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">Tudo o que você precisa para a sua jornada acadêmica.</h2>
+                    <p class="text-green-100 text-sm sm:text-base mb-6">Acesse o SUAP, confira o passo a passo de emissão de certificados, saiba como funciona o estágio e consulte o regulamento do seu curso.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="portalApp.switchTab('guias')" class="bg-white text-ifg-green font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-100 transition shadow text-sm">Ver Guias Interativos</button>
+                        <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener noreferrer" class="bg-ifg-red text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-ifg-red-dark transition shadow text-sm flex items-center gap-2">
+                            Acessar SUAP Direct <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Acesso Rápido -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div onclick="portalApp.switchTab('guias')" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-start space-x-4">
+                    <div class="p-3 bg-green-50 text-ifg-green rounded-xl">
+                        <i data-lucide="file-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">Certificados</h3>
+                        <p class="text-xs text-gray-500 mt-1">Como emitir diplomas e certificados da EJA/Técnico.</p>
+                    </div>
+                </div>
+
+                <div onclick="portalApp.switchTab('suap')" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-start space-x-4">
+                    <div class="p-3 bg-red-50 text-ifg-red rounded-xl">
+                        <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">Notas e Faltas</h3>
+                        <p class="text-xs text-gray-500 mt-1">Acesso direto ao boletim e diário no SUAP.</p>
+                    </div>
+                </div>
+
+                <div onclick="portalApp.switchTab('guias')" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-start space-x-4">
+                    <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                        <i data-lucide="briefcase" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">Validação de Estágio</h3>
+                        <p class="text-xs text-gray-500 mt-1">Requisitos e orientações para estágio supervisado.</p>
+                    </div>
+                </div>
+
+                <div onclick="portalApp.switchTab('normas')" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-start space-x-4">
+                    <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
+                        <i data-lucide="book-open" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">Regimento Geral</h3>
+                        <p class="text-xs text-gray-500 mt-1">Direitos, deveres e regulamento do campus.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avisos e Destaques Mobile -->
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                    <i data-lucide="bell" class="w-5 h-5 text-ifg-red"></i> Comunicados Importantes
+                </h3>
+                <div class="space-y-3">
+                    <div class="p-3 bg-gray-50 rounded-xl border-l-4 border-ifg-green flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                        <div>
+                            <span class="text-xs font-semibold text-ifg-green uppercase">EJA / Técnico Integrado</span>
+                            <h4 class="font-medium text-sm text-gray-800">Solicitação de Certificação de Conclusão do Ensino Médio</h4>
+                            <p class="text-xs text-gray-500">As solicitações podem ser feitas via requerimento online no SUAP ou presencialmente na CORAC.</p>
+                        </div>
+                        <button onclick="portalApp.openGuide('certificacao')" class="self-start sm:self-center text-xs font-semibold text-ifg-green hover:underline">Ver passo a passo &rarr;</button>
+                    </div>
+
+                    <div class="p-3 bg-gray-50 rounded-xl border-l-4 border-ifg-red flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                        <div>
+                            <span class="text-xs font-semibold text-ifg-red uppercase">Pós-Graduação & Cursos</span>
+                            <h4 class="font-medium text-sm text-gray-800">Editais de Seleção e Cursos de Extensão</h4>
+                            <p class="text-xs text-gray-500">Acompanhe as oportunidades de qualificação continuada no Campus Goiânia.</p>
+                        </div>
+                        <button onclick="portalApp.openGuide('pos-graduacao')" class="self-start sm:self-center text-xs font-semibold text-ifg-red hover:underline">Saiba mais &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 2: GUIAS PASSO A PASSO INTERATIVOS -->
+        <section id="tab-guias" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Guias Passo a Passo Interativos</h2>
+                <p class="text-sm text-gray-600 mb-6">Selecione o procedimento desejado abaixo para visualizar as etapas detalhadas.</p>
+
+                <!-- Acordeão de Guias -->
+                <div class="space-y-4" id="accordion-container">
+                    
+                    <!-- Guia 1: Certificado EJA / Técnico Integrado -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden guide-item" id="guide-certificacao">
+                        <button class="w-full p-4 bg-gray-50 hover:bg-gray-100 text-left font-bold text-gray-800 flex justify-between items-center transition accordion-header">
+                            <span class="flex items-center gap-2 text-base">
+                                <i data-lucide="award" class="w-5 h-5 text-ifg-green"></i> Como solicitar Certificado EJA ou Técnico Integrado
+                            </span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform duration-200"></i>
+                        </button>
+                        <div class="p-5 hidden bg-white border-t border-gray-100 space-y-4 accordion-content text-sm">
+                            <ol class="relative border-l border-gray-200 ml-3 space-y-6">
+                                <li class="ml-6">
+                                    <span class="absolute flex items-center justify-center w-6 h-6 bg-ifg-green text-white rounded-full -left-3 ring-4 ring-white text-xs font-bold">1</span>
+                                    <h4 class="font-semibold text-gray-900">Verificação de Pendências</h4>
+                                    <p class="text-gray-600 text-xs mt-1">Certifique-se de que todas as disciplinas foram concluídas e que a carga horária de estágio (se exigida pelo curso) foi devidamente homologada.</p>
+                                </li>
+                                <li class="ml-6">
+                                    <span class="absolute flex items-center justify-center w-6 h-6 bg-ifg-green text-white rounded-full -left-3 ring-4 ring-white text-xs font-bold">2</span>
+                                    <h4 class="font-semibold text-gray-900">Acesso ao SUAP / Requerimentos</h4>
+                                    <p class="text-gray-600 text-xs mt-1">Acesse o SUAP com seu CPF/Matrícula. Vá na aba <span class="font-semibold text-gray-800">Ensino &gt; Requerimentos</span> e abra um novo pedido selecionando <span class="font-semibold text-gray-800">"Emissão de Certificado / Diploma"</span>.</p>
+                                </li>
+                                <li class="ml-6">
+                                    <span class="absolute flex items-center justify-center w-6 h-6 bg-ifg-green text-white rounded-full -left-3 ring-4 ring-white text-xs font-bold">3</span>
+                                    <h4 class="font-semibold text-gray-900">Anexo de Documentação</h4>
+                                    <p class="text-gray-600 text-xs mt-1">Envie cópias em PDF do RG, CPF, Certidão de Nascimento/Casamento e Comprovante de Quitação Eleitoral.</p>
+                                </li>
+                                <li class="ml-6">
+                                    <span class="absolute flex items-center justify-center w-6 h-6 bg-ifg-green text-white rounded-full -left-3 ring-4 ring-white text-xs font-bold">4</span>
+                                    <h4 class="font-semibold text-gray-900">Acompanhamento e Retirada</h4>
+                                    <p class="text-gray-600 text-xs mt-1">Acompanhe o trâmite no SUAP. O documento digital será liberado com código de verificação ou disponibilizado para retirada na CORAC Campus Goiânia.</p>
+                                </li>
+                            </ol>
+                            <div class="pt-2">
+                                <a href="https://suap.ifg.edu.br" target="_blank" class="inline-flex items-center gap-2 bg-ifg-green text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-ifg-green-dark transition">
+                                    Ir para Requerimentos no SUAP <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Guia 2: Validação e Processo de Estágio -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden guide-item" id="guide-estagio">
+                        <button class="w-full p-4 bg-gray-50 hover:bg-gray-100 text-left font-bold text-gray-800 flex justify-between items-center transition accordion-header">
+                            <span class="flex items-center gap-2 text-base">
+                                <i data-lucide="briefcase" class="w-5 h-5 text-ifg-green"></i> Processo e Validação de Estágio
+                            </span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform duration-200"></i>
+                        </button>
+                        <div class="p-5 hidden bg-white border-t border-gray-100 space-y-4 accordion-content text-sm">
+                            <p class="text-gray-600 text-xs">O Estágio Supervisionado é uma etapa fundamental para a formação prática dos alunos do Ensino Técnico Integrado.</p>
+                            <div class="bg-green-50 p-3 rounded-lg border border-green-200 text-xs text-gray-700">
+                                <strong>Dica importante:</strong> Nenhum estágio pode ser iniciado sem a assinatura prévia do Termo de Compromisso de Estágio (TCE) pelo IFG.
+                            </div>
+                            <ul class="list-disc pl-5 space-y-2 text-xs text-gray-700">
+                                <li><strong>Passo 1:</strong> Providenciar o Termo de Compromisso (TCE) e plano de atividades assinado pela empresa.</li>
+                                <li><strong>Passo 2:</strong> Submeter o documento para a Coordenação de Estágio do Campus Goiânia via SUAP.</li>
+                                <li><strong>Passo 3:</strong> Cumprir as horas requisitadas com orientação de um professor supervisor.</li>
+                                <li><strong>Passo 4:</strong> Enviar o Relatório Final de Estágio para validação e lançamento na matriz curricular.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Guia 3: Acesso à Pós-Graduação e Cursos -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden guide-item" id="guide-pos-graduacao">
+                        <button class="w-full p-4 bg-gray-50 hover:bg-gray-100 text-left font-bold text-gray-800 flex justify-between items-center transition accordion-header">
+                            <span class="flex items-center gap-2 text-base">
+                                <i data-lucide="book-open-check" class="w-5 h-5 text-ifg-green"></i> Oportunidades em Pós-Graduação e Cursos do Campus
+                            </span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform duration-200"></i>
+                        </button>
+                        <div class="p-5 hidden bg-white border-t border-gray-100 space-y-4 accordion-content text-sm">
+                            <p class="text-gray-600 text-xs">Além do Ensino Médio/Técnico, o Campus Goiânia oferece cursos de Especialização, Mestrado e Extensão.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <h5 class="font-bold text-ifg-green">Cursos de Extensão / Qualificação</h5>
+                                    <p class="text-gray-600 mt-1">Abertos periodicamente para alunos do IFG e comunidade. Inscrições gratuitas via portal de editais.</p>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <h5 class="font-bold text-ifg-green">Pós-Graduação (Especialização/Mestrado)</h5>
+                                    <p class="text-gray-600 mt-1">Destinado a quem já concluiu a Graduação. Alunos do técnico podem participar como ouvintes ou bolsistas de pesquisa.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 3: ATALHOS SUAP -->
+        <section id="tab-suap" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Atalhos Diretos do SUAP</h2>
+                        <p class="text-sm text-gray-600">Acesse os serviços mais utilizados do Sistema Unificado de Administração Pública.</p>
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="bg-red-100 text-ifg-red font-bold text-xs px-3 py-1.5 rounded-full">Sistema Oficial IFG</span>
+                    </div>
+                </div>
+
+                <!-- Grid de Widgets do SUAP -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    <!-- Widget 1 -->
+                    <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener font-medium" class="group bg-gray-50 hover:bg-ifg-green-light border border-gray-200 p-5 rounded-2xl transition duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-3 bg-white text-ifg-green rounded-xl shadow-sm group-hover:bg-ifg-green group-hover:text-white transition">
+                                <i data-lucide="file-text" class="w-6 h-6"></i>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-400 group-hover:text-ifg-green transition"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 group-hover:text-ifg-green transition">Boletim & Notas</h3>
+                            <p class="text-xs text-gray-500 mt-1">Consulte o desempenho individual, notas parciais e resultado final.</p>
+                        </div>
+                    </a>
+
+                    <!-- Widget 2 -->
+                    <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener font-medium" class="group bg-gray-50 hover:bg-ifg-green-light border border-gray-200 p-5 rounded-2xl transition duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-3 bg-white text-ifg-green rounded-xl shadow-sm group-hover:bg-ifg-green group-hover:text-white transition">
+                                <i data-lucide="calendar" class="w-6 h-6"></i>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-400 group-hover:text-ifg-green transition"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 group-hover:text-ifg-green transition">Faltas e Horários</h3>
+                            <p class="text-xs text-gray-500 mt-1">Verifique frequência acadêmica, horário das disciplinas e salas.</p>
+                        </div>
+                    </a>
+
+                    <!-- Widget 3 -->
+                    <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener font-medium" class="group bg-gray-50 hover:bg-ifg-green-light border border-gray-200 p-5 rounded-2xl transition duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-3 bg-white text-ifg-green rounded-xl shadow-sm group-hover:bg-ifg-green group-hover:text-white transition">
+                                <i data-lucide="folder-output" class="w-6 h-6"></i>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-400 group-hover:text-ifg-green transition"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 group-hover:text-ifg-green transition">Requerimentos Online</h3>
+                            <p class="text-xs text-gray-500 mt-1">Abra chamados para justificativa de faltas, 2ª via de documentos e provas.</p>
+                        </div>
+                    </a>
+
+                    <!-- Widget 4 -->
+                    <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener font-medium" class="group bg-gray-50 hover:bg-ifg-green-light border border-gray-200 p-5 rounded-2xl transition duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-3 bg-white text-ifg-green rounded-xl shadow-sm group-hover:bg-ifg-green group-hover:text-white transition">
+                                <i data-lucide="book-marked" class="w-6 h-6"></i>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-400 group-hover:text-ifg-green transition"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 group-hover:text-ifg-green transition">Biblioteca SUAP</h3>
+                            <p class="text-xs text-gray-500 mt-1">Renovação de empréstimos, reserva de livros e acervo digital.</p>
+                        </div>
+                    </a>
+
+                    <!-- Widget 5 -->
+                    <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener font-medium" class="group bg-gray-50 hover:bg-ifg-green-light border border-gray-200 p-5 rounded-2xl transition duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-3 bg-white text-ifg-green rounded-xl shadow-sm group-hover:bg-ifg-green group-hover:text-white transition">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-400 group-hover:text-ifg-green transition"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 group-hover:text-ifg-green transition">Dados Cadastrais</h3>
+                            <p class="text-xs text-gray-500 mt-1">Atualização de telefone, e-mail institucional e dados pessoais.</p>
+                        </div>
+                    </a>
+
+                    <!-- Widget 6 -->
+                    <a href="https://suap.ifg.edu.br" target="_blank" rel="noopener font-medium" class="group bg-gray-50 hover:bg-ifg-green-light border border-gray-200 p-5 rounded-2xl transition duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-3 bg-white text-ifg-green rounded-xl shadow-sm group-hover:bg-ifg-green group-hover:text-white transition">
+                                <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-400 group-hover:text-ifg-green transition"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 group-hover:text-ifg-green transition">Assistência Estudantil</h3>
+                            <p class="text-xs text-gray-500 mt-1">Editais de auxílio-permanência, alimentação e transporte.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 4: REGIMENTO E NORMAS -->
+        <section id="tab-normas" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Regimentos e Normas Acadêmicas</h2>
+                <p class="text-sm text-gray-600 mb-6">Informações essenciais sobre os direitos, deveres e regulamento do Ensino Médio Integrado e EJA no Campus Goiânia.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Card 1 -->
+                    <div class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+                        <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2 mb-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-ifg-green"></i> Frequência e Aprovação
+                        </h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Conforme a Organização Didática do IFG, a frequência mínima obrigatória para aprovação em qualquer disciplina é de <span class="font-bold text-gray-800">75% (setenta e cinco por cento)</span> das aulas dadas. Faltas justificadas de acordo com a legislação vigente devem ser protocoladas via requerimento no SUAP em até 2 (dois) dias úteis.
+                        </p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+                        <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2 mb-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-ifg-red"></i> Prova Substitutiva / 2ª Chamada
+                        </h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            A solicitação de segunda chamada de avaliações deve ser formalizada via SUAP, mediante apresentação de atestado médico ou justificativa legal com documentação comprobatória, no prazo estipulado no regimento do campus.
+                        </p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+                        <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2 mb-2">
+                            <i data-lucide="shield" class="w-5 h-5 text-ifg-green"></i> Direitos do Estudante
+                        </h3>
+                        <ul class="text-xs text-gray-600 list-disc pl-4 space-y-1">
+                            <li>Receber atendimento pedagógico e de orientação educacional;</li>
+                            <li>Acessar previamente os planos de ensino das disciplinas;</li>
+                            <li>Recorrer de resultados de avaliações dentro do prazo regimental;</li>
+                            <li>Participar de agremiações e representação estudantil.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+                        <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2 mb-2">
+                            <i data-lucide="file-text" class="w-5 h-5 text-gray-700"></i> Regulamentos para Download
+                        </h3>
+                        <div class="space-y-2 mt-2">
+                            <a href="https://www.ifg.edu.br" target="_blank" class="block p-2 bg-white rounded border border-gray-200 text-xs text-ifg-green font-semibold hover:underline flex items-center justify-between">
+                                Organização Didática do IFG (PDF) <i data-lucide="download" class="w-4 h-4"></i>
+                            </a>
+                            <a href="https://www.ifg.edu.br" target="_blank" class="block p-2 bg-white rounded border border-gray-200 text-xs text-ifg-green font-semibold hover:underline flex items-center justify-between">
+                                Regulamento de Estágio do Campus Goiânia <i data-lucide="download" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-900 text-gray-300 py-8 border-t border-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <p class="font-bold text-white text-sm">Instituto Federal de Educação, Ciência e Tecnologia de Goiás</p>
+                <p class="text-xs text-gray-400 mt-1">Campus Goiânia - Rua 75, nº 46, Centro, Goiânia/GO - CEP: 74055-110</p>
+            </div>
+            <div class="text-xs text-gray-400 text-center md:text-right">
+                <p>Portal desenvolvido para facilitação de acesso dos estudantes.</p>
+                <p class="mt-1 font-mono text-gray-500">Validação de Estágio Supervisionado • IFG Goiânia</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lógica em JavaScript (POO + Funcional) -->
+    <script>
+        /**
+         * Manager de Acessibilidade (Alto Contraste e Fontes)
+         * Paradigma OO
+         */
+        class AcessibilidadeManager {
+            constructor() {
+                this.root = document.documentElement;
+                this.fontSizeLevel = 0; // 0: normal, 1: grande, 2: muito grande
+                this.fontClasses = ['text-sm', 'text-base', 'text-lg'];
+            }
+
+            init() {
+                document.getElementById('btn-contrast').addEventListener('click', () => this.toggleContrast());
+                document.getElementById('btn-increase-font').addEventListener('click', () => this.changeFontSize(1));
+                document.getElementById('btn-decrease-font').addEventListener('click', () => this.changeFontSize(-1));
+                document.getElementById('btn-reset-font').addEventListener('click', () => this.resetFontSize());
+            }
+
+            toggleContrast() {
+                this.root.classList.toggle('high-contrast');
+            }
+
+            changeFontSize(delta) {
+                this.fontSizeLevel = Math.min(Math.max(this.fontSizeLevel + delta, -1), 2);
+                if (this.fontSizeLevel === 0) {
+                    this.root.style.fontSize = '100%';
+                } else if (this.fontSizeLevel === 1) {
+                    this.root.style.fontSize = '112.5%'; // 18px base
+                } else if (this.fontSizeLevel === 2) {
+                    this.root.style.fontSize = '125%';   // 20px base
+                } else if (this.fontSizeLevel === -1) {
+                    this.root.style.fontSize = '90%';    // ~14.4px base
+                }
+            }
+
+            resetFontSize() {
+                this.fontSizeLevel = 0;
+                this.root.style.fontSize = '100%';
+            }
+        }
+
+        /**
+         * Controller de Busca Rápida e Inteligente
+         * Funcional e Orientado a Objetos
+         */
+        class BuscaController {
+            constructor(portalApp) {
+                this.portalApp = portalApp;
+                this.searchInput = document.getElementById('search-input');
+                this.searchResults = document.getElementById('search-results');
+                this.btnClear = document.getElementById('btn-clear-search');
+                
+                // Base de conhecimento indexada para busca funcional
+                this.database = [
+                    { keywords: ['certificado', 'eja', 'técnico', 'diploma', 'conclusão', 'pegar certificado'], title: 'Como solicitar Certificado EJA ou Técnico', action: () => { this.portalApp.switchTab('guias'); this.portalApp.openGuide('certificacao'); } },
+                    { keywords: ['nota', 'notas', 'boletim', 'diario', 'desempenho'], title: 'Acessar Boletim de Notas no SUAP', action: () => { this.portalApp.switchTab('suap'); } },
+                    { keywords: ['falta', 'faltas', 'frequência', 'presença', 'horário'], title: 'Consulta de Faltas e Horários de Aula', action: () => { this.portalApp.switchTab('suap'); } },
+                    { keywords: ['estágio', 'estagios', 'tce', 'validação', 'empresa'], title: 'Informações e Validação de Estágio', action: () => { this.portalApp.switchTab('guias'); this.portalApp.openGuide('estagio'); } },
+                    { keywords: ['pós', 'pos-graduação', 'cursos', 'extensão', 'mestrado'], title: 'Acesso à Pós-Graduação e Cursos do Campus', action: () => { this.portalApp.switchTab('guias'); this.portalApp.openGuide('pos-graduacao'); } },
+                    { keywords: ['biblioteca', 'livro', 'livros', 'empréstimo'], title: 'Biblioteca SUAP e Acervo Digital', action: () => { this.portalApp.switchTab('suap'); } },
+                    { keywords: ['regimento', 'normas', 'prova', '2 chamada', 'atestado'], title: 'Regimento Geral e Organização Didática', action: () => { this.portalApp.switchTab('normas'); } }
+                ];
+            }
+
+            init() {
+                this.searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+                this.btnClear.addEventListener('click', () => this.clearSearch());
+                
+                // Eventos de Tags
+                document.querySelectorAll('.tag-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.searchInput.value = btn.innerText;
+                        this.handleSearch(btn.innerText);
+                    });
+                });
+            }
+
+            // Filtro Funcional puro
+            filterData(term) {
+                const normalizedTerm = term.toLowerCase().trim();
+                if (!normalizedTerm) return [];
+
+                return this.database.filter(item => 
+                    item.keywords.some(kw => kw.toLowerCase().includes(normalizedTerm)) ||
+                    item.title.toLowerCase().includes(normalizedTerm)
+                );
+            }
+
+            handleSearch(term) {
+                if (term.trim().length > 0) {
+                    this.btnClear.classList.remove('hidden');
+                } else {
+                    this.btnClear.classList.add('hidden');
+                }
+
+                const results = this.filterData(term);
+                this.renderResults(results);
+            }
+
+            renderResults(results) {
+                this.searchResults.innerHTML = '';
+                
+                if (results.length === 0 && this.searchInput.value.trim().length > 0) {
+                    this.searchResults.classList.remove('hidden');
+                    this.searchResults.innerHTML = `
+                        <div class="p-3 text-xs text-gray-500 text-center">
+                            Nenhum resultado encontrado. Tente buscar por "Certificado", "Notas", "Faltas" ou "Estágio".
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (results.length === 0) {
+                    this.searchResults.classList.add('hidden');
+                    return;
+                }
+
+                this.searchResults.classList.remove('hidden');
+                
+                results.forEach(res => {
+                    const item = document.createElement('button');
+                    item.className = 'w-full text-left p-3 hover:bg-ifg-green-light rounded-xl transition flex items-center justify-between group';
+                    item.innerHTML = `
+                        <span class="text-sm font-semibold text-gray-800 group-hover:text-ifg-green">${res.title}</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 group-hover:text-ifg-green"></i>
+                    `;
+                    item.addEventListener('click', () => {
+                        res.action();
+                        this.clearSearch();
+                    });
+                    this.searchResults.appendChild(item);
+                });
+
+                // Reinicializar ícones dinâmicos
+                if (window.lucide) lucide.createIcons();
+            }
+
+            clearSearch() {
+                this.searchInput.value = '';
+                this.searchResults.innerHTML = '';
+                this.searchResults.classList.add('hidden');
+                this.btnClear.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Aplicação Principal - SPA PortalApp
+         */
+        class PortalApp {
+            constructor() {
+                this.acessibilidade = new AcessibilidadeManager();
+                this.busca = new BuscaController(this);
+            }
+
+            init() {
+                this.acessibilidade.init();
+                this.busca.init();
+                this.setupNavigation();
+                this.setupAccordions();
+                
+                // Inicializar Lucide Icons
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
+
+            setupNavigation() {
+                // Navegação Desktop e Mobile
+                const navButtons = document.querySelectorAll('.nav-btn, .nav-btn-mobile');
+                navButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const targetTab = e.currentTarget.getAttribute('data-target');
+                        this.switchTab(targetTab);
+
+                        // Esconder menu mobile se estiver aberto
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    });
+                });
+
+                // Menu Mobile Toggle
+                const btnMobileMenu = document.getElementById('btn-mobile-menu');
+                btnMobileMenu.addEventListener('click', () => {
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            switchTab(tabId) {
+                // Esconder todas as abas
+                const tabs = document.querySelectorAll('.tab-content');
+                tabs.forEach(tab => tab.classList.remove('active'));
+
+                // Mostrar a aba selecionada
+                const selectedTab = document.getElementById(`tab-${tabId}`);
+                if (selectedTab) {
+                    selectedTab.classList.add('active');
+                }
+
+                // Atualizar estado estético dos botões de navegação
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if (btn.getAttribute('data-target') === tabId) {
+                        btn.classList.add('bg-ifg-green-dark', 'text-white');
+                    } else {
+                        btn.classList.remove('bg-ifg-green-dark');
+                    }
+                });
+
+                // Rolar para o topo do conteúdo de forma suave
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            setupAccordions() {
+                const headers = document.querySelectorAll('.accordion-header');
+                headers.forEach(header => {
+                    header.addEventListener('click', () => {
+                        const content = header.nextElementSibling;
+                        const icon = header.querySelector('i[data-lucide="chevron-down"]');
+
+                        const isHidden = content.classList.contains('hidden');
+
+                        // Fechar todos
+                        document.querySelectorAll('.accordion-content').forEach(c => c.classList.add('hidden'));
+                        document.querySelectorAll('.accordion-header i[data-lucide="chevron-down"]').forEach(i => i.style.transform = 'rotate(0deg)');
+
+                        // Alternar atual
+                        if (isHidden) {
+                            content.classList.remove('hidden');
+                            if (icon) icon.style.transform = 'rotate(180deg)';
+                        }
+                    });
+                });
+            }
+
+            openGuide(guideId) {
+                const guideElement = document.getElementById(`guide-${guideId}`);
+                if (guideElement) {
+                    const header = guideElement.querySelector('.accordion-header');
+                    const content = guideElement.querySelector('.accordion-content');
+                    const icon = header.querySelector('i[data-lucide="chevron-down"]');
+
+                    content.classList.remove('hidden');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+
+                    // Rolar até o elemento
+                    guideElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        // Instanciação e Execução na Carga da Janela
+        let portalApp;
+        window.onload = function() {
+            portalApp = new PortalApp();
+            portalApp.init();
+        };
+    </script>
+</body>
+</html>
